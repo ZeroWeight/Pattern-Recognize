@@ -1,0 +1,246 @@
+\documentclass{article}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{bm}
+%\include{macros}
+%\usepackage{floatflt}
+%\usepackage{graphics}
+%\usepackage{epsfig}
+
+
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem*{defition}{Definition}
+\newtheorem*{example}{Example}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{note}{Note}
+\newtheorem*{exercise}{Exercise}
+
+\setlength{\oddsidemargin}{-0.25 in}
+\setlength{\evensidemargin}{-0.25 in} \setlength{\topmargin}{-0.25
+in} \setlength{\textwidth}{7 in} \setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.25 in} \setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\newcommand{\homework}[4]{
+\pagestyle{myheadings} \thispagestyle{plain}
+\newpage
+\setcounter{page}{1} \setcounter{section}{#4} \noindent
+\begin{center}
+\framebox{ \vbox{\vspace{2mm} \hbox to 6.28in { {\bf
+THU-70250043,~Pattern~Recognition~(Spring 2017) \hfill Homework: 1} }
+\vspace{6mm} \hbox to 6.28in { {\Large \hfill #1 \hfill} }
+\vspace{6mm} \hbox to 6.28in { {\it Lecturer: #2 \hfill} }
+\vspace{2mm} \hbox to 6.28in { {\it Student: #3 \hfill} }
+\vspace{2mm} } }
+\end{center}
+\markboth{#1}{#1} \vspace*{4mm} }
+
+
+\begin{document}
+
+\homework{Bayesian Methods}{Changshui Zhang
+\hspace{5mm} {\tt zcs@mail.tsinghua.edu.cn}}{ \hspace{5mm} {\tt
+ } }{8}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section 2.  Problem
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{MLE and MAP}
+
+Maximum Likelihood Estimation (MLE) and Maximum A Posterior (MAP) are two basic principles for
+learning parametric distributions. In this problem you will derive the MLE and the MAP estimates for some
+widely-used distributions.
+
+Before stating the problems, we first give a brief review of MLE and MAP. Suppose we consider a family of
+distributions (c.d.f or p.m.f.) $F:=\{f(x|\theta):\theta\in\Theta\}$, where x denotes the random vector, $\theta$
+denotes a vector of parameters, and $\Theta$ denotes the set of all possible values of $\theta$. Given a set
+$\{x_1,x_2,...,x_n\}$ of sample points independently drawn from some $f^*\in F$, or equivalently some $f(x|\theta^*)$
+such that $\theta^*\in \Theta$, we want to obtain an estimate of the value of $\theta^*$. Recall that in the case
+of an independently and identically distributed(i.i.d.) sample the log-likelihood function is in the following
+form
+\begin{equation}
+l(\theta)=\sum_{i=1}^n \log f(x_i|\theta),
+\end{equation}
+which is a function of $\theta$ under some fixed sample $\{x_1,x_2,...,x_n\}$. The MLE estimate $\hat{\theta}_{mle}$ is
+then defined as follows:
+\begin{itemize}
+  \item $\hat{\theta}_{mle}\in\Theta$,
+  \item $\forall \theta\in\Theta,$ $l(\theta)\leq l(\hat{\theta}_{mle})$.
+\end{itemize}
+
+If we have access to some prior distribution $P(\theta)$ over $\Theta$, be it from past experiences or domain knowledge
+or simply belief, we can think about the posterior distribution over $\Theta$:
+\begin{equation}
+q(\theta):=\frac{\left(\prod_{i=1}^nf(x_t|\theta)\right)p(\theta)}{z(x_1,x_2,...,x_n)},
+\end{equation}
+where
+\begin{equation}
+z(x_1,x_2,...,x_n):=\int_\Theta \left(\prod_{i=1}^nf(x_t|\theta)\right)p(\theta) d\theta.
+\end{equation}
+The MAP estimate $\hat{\theta}_{map}$ is then defined as follows:
+\begin{itemize}
+  \item $\hat{\theta}_{map}\in \Theta$,
+  \item $\forall \theta \in \Theta,$ $q(\theta)\leq q(\hat{\theta}_{map})$, or equivalently,
+  \begin{equation}
+  l(\theta)+\log p(\theta) \leq l(\hat{\theta}_{map}) + \log p(\hat{\theta}_{map}).
+  \end{equation}
+\end{itemize}
+
+1. MLE for the uniform distribution
+
+Consider a uniform distribution centered on 0 with width $2a$. The density function is given by
+
+\begin{equation}
+p(x) = \frac{1}{2a}I(x \in [-a, a])
+\end{equation}
+
+
+a. Given a data set $x_1, x_2, \cdots , x_n$, what is the maximum likelihood estimate of $a$( call it $\hat{a}$)
+
+b. What probability would the model assign to a new data point $x_{n+1}$ using $\hat{a}$
+
+c. Do you see any problem with the above approach? Briefly suggest a better approach
+
+
+
+2. Consider a training data of $N$ i.i.d. (independently and identically distribute) observations, $\bm X=\{x_1, x_2, ..., x_N\}$ with corresponding $N$ target values $\bm T=\{t_1, t_2, ..., t_N\}$.
+
+We want to fit these observations into some model
+\begin{equation}\label{eq1}
+t = y(x, \bm w) + \epsilon
+\end{equation}
+
+where $\bm w$ is the model parameters and $\epsilon$ is some error term.
+
+2.1 To find $\bm w$, we can minimize the sum of square error
+\begin{equation} \label{eq2}
+E(\bm w) = \frac{1}{2}\sum_{n=1}^N\{y(x_n, \bm w)-t_n\}^2
+\end{equation}
+
+Now suppose we believe that the distribution of error term $\epsilon$ is gaussian
+\begin{equation}\label{eq3}
+p(\epsilon|\beta) = \mathcal N(\epsilon|0, \beta^{-1})
+\end{equation}
+
+where $\beta = \frac{1}{\sigma^2}$ is the inverse of variance. Using the property of gaussian distribution, we have
+\begin{equation}\label{eq4}
+p(t|x, \bm w, \beta) = \mathcal N(t|y(x, \bm w), \beta^{-1})
+\end{equation}
+
+Under this assumption, the likelihood function is given by
+
+\begin{equation}\label{eq5}
+p(\bm T|\bm X, \bm w, \beta) = \prod_{n=1}^N \mathcal N(t_n|y(x_n, \bm w), \beta^{-1})
+\end{equation}
+
+Show that the problem of finding the maximum likelihood (ML) solution for $\bm w$ is equivalent to the problem of minimizing the sum of square error (\ref{eq2}).
+
+2.2 In order to avoid overfitting, we often add a weight decay term to (\ref{eq2})
+
+\begin{equation}\label{eq6}
+  E(\bm w) = \frac{1}{2}\sum_{n=1}^N\{y(x_n, \bm w)-t_n\}^2 + \frac{\lambda}{2}||\bm w||^2
+\end{equation}
+
+On the other hand, we believe that $\bm w$ has a prior distribution of
+\begin{equation}\label{eq7}
+  p(\bm w|\alpha) = \mathcal N(\bm w|\bm 0, \alpha^{-1}\bm I)
+\end{equation}
+
+Using Bayes’ theorem, the posterior distribution for $\bm w$ is proportional to the product of the prior distribution and the likelihood function
+\begin{equation}\label{eq8}
+  p(\bm w|\bm X, \bm T, \alpha, \beta) \propto p(\bm T|\bm X, \bm w, \beta)p(\bm w|\alpha)
+\end{equation}
+
+Show that the problem of finding the maximum of the posterior (MAP) solution for $\bm w$ is equivalent to the problem of minimizing (\ref{eq6}).
+
+
+\section*{Naive Bayes}
+
+1. Considers the learning function $X \rightarrow Y$, where class label $Y\in\{T,F\}$, $X=\langle X_1,X_2,...,X_n \rangle$ where $X_1$ is a boolean variable and $\{X_2,...,X_n\}$ are continuous variables. Assume that for each continuous $X_i$, $P(X_i|Y=y)$ follows a Gaussian distribution. List and give the total number of the parameters that you would need to estimate in order to classify a future example using a Naive Bayes classifier.
+Give the formula for computing $P(Y|X)$ in terms of these
+parameters and feature variables $X_i$.
+
+2. Consider a simple learning problem of determining whether Alice and Bob from CA will go to hiking or not
+$Y:Hike\in\{T,F\}$ given the weather conditions $X_1:Sunny\in\{T,F\}$ and $X_2:Windy\in\{T,F\}$ by a
+Naive Bayes classifier. Using training data, we estimated the parameters $P(Hike) = 0.5$, $P(Sunny|Hike) = 0.9$, $P(Windy|\neg Hike) = 0.8$, $P(Windy|Hike) = 0.3$ and $P(Sunny|\neg Hike) = 0.4$. Assume that the true distribution of $X_1$, $X_2$, and $Y$ satisfies the Naive Bayes
+assumption of conditional independence with the above parameters.
+
+2.1. Assume Sunny and Windy are truly independent given Hike. Write down the Naive Bayes
+decision rule for this problem using both attributes Sunny and Windy.
+
+2.2. Given the decision rule above, what is the expected error rate of the Naive Bayes classifier? (The
+expected error rate is the probability that each class generates an observation where the decision
+rule is incorrect.)
+
+2.3. What is the joint probability that Alice and Bob go to hiking and the weather is sunny and
+windy, that is $P(Sunny,Windy,Hike)$?
+
+2.4. Next, suppose that we gather more information about weather conditions and introduce a new feature
+denoting whether the weather is $X_3$: Rainy or not. Assume that each day the weather in CA can
+be either Rainy or Sunny. That is, it can not be both Sunny and Rainy (similarly, it can not be
+$\neg Sunny$ and $\neg Rainy$). In the above new case, are any of the Naive Bayes assumptions violated? Why (not)? What is
+the joint probability that Alice and Bob go to hiking and the weather is sunny, windy and not
+rainy, that is $P(Sunny,Windy,\neg Rainy,Hike)$?
+
+2.5. What is the expected error rate when the Naive Bayes classifier uses all three attributes? Does
+the performance of Naive Bayes improve by observing the new attribute Rainy? Explain why.
+
+
+
+
+
+\section*{Programming}
+In this problem you will implement Naive Bayes and Logistic Regression, then compare their performance on a
+document classification task. The data for this task is taken from the 20 Newsgroups data set, and is available
+from the attached zip file. The included README.txt describes the data set and file format.
+
+Our Naive Bayes model will use the bag-of-words assumption. This model assumes that each word in a
+document is drawn independently from a multinomial distribution over possible words. (A multinomial
+distribution is a generalization of a Bernoulli distribution to multiple values.) Although this model ignores
+the ordering of words in a document, it works surprisingly well for a number of tasks. We number the words
+in our vocabulary from 1 to $m$, where $m$ is the total number of distinct words in all of the documents.
+Documents from class $y$ are drawn from a class-specific multinomial distribution parameterized by $\theta_y$. $\theta_y$ is
+a vector, where $\theta_{y,i}$ is the probability of drawing word $i$ and $\sum_{i=1}^m \theta_{y,i}=1$.
+Therefore, the class-conditional probability of drawing document x from our Naive Bayes model is
+$P(X = x|Y = y) = \prod_{i=1}^m (\theta_{y,i})^{count_i(x)}$, where $count_i(x)$ is the number of times word $i$ appears in $x$.
+
+1. Provide high-level descriptions of the Naive Bayes and Logistic Regression algorithms. Be
+sure to describe how to estimate the model parameters and how to classify a new example.
+
+2. Imagine that a certain word is never observed in the training data, but occurs in a test
+instance. What will happen when our Naive Bayes classifier predicts the probability of the this test
+instance? Explain why this situation is undesirable. How to avoid this problem? Will logistic regression have a similar problem?
+Why or why not?
+
+3. Implement Logistic Regression and Naive Bayes. Use add-one smoothing when estimating
+the parameters of your Naive Bayes classifier. For logistic regression, we found that a step size around
+0.0001 worked well. Train both models on the provided training data and predict the labels of the test
+data. Report the training and test error of both models. Submit your code along with your homework.
+
+4. Which model performs better on this task? Why do you think this is the case?
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reference
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{thebibliography}{1}
+
+%\bibitem{BoydVandenberghe2004}
+%S. Boyd and L. Vandenberghe, \emph{Convex Optimization}, Cambridge
+%University Press, 2004.
+
+%\end{thebibliography}
+\end{document}
