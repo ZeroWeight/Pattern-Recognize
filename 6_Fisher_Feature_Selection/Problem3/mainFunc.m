@@ -2,9 +2,9 @@ clear; clc;
 load least_sq.mat;
 
 %% Step 1: Data preprocessing
-dataTrain = train_small; % select the training data
-% train = train_mid;
-% train = train_large;
+% dataTrain = train_small; % select the training data
+% dataTrain = train_mid;
+dataTrain = train_large;
 
 X = dataTrain.X;
 y = dataTrain.y;
@@ -23,39 +23,41 @@ for l = 1: L
   w = W(:, l);
   %%% Your code here %%%
   % training error multiplying 1/2
-  err_Lambda(l, 1) = ...
+  err = y - X * w;
+  err_Lambda(l, 1) = mean(0.5 * err .* err); 
 
   % L1 regularization penalty
-  err_Lambda(l, 2) = ...
+  err_Lambda(l, 2) = norm(w,1);
 
   % minimized objective
-  err_Lambda(l, 3) = ...
+  err_Lambda(l, 3) = err_Lambda(l, 1) + err_Lambda(l, 2) * Lambda(l);
 
   % L0 norm: non-zero parameters  
-  err_Lambda(l, 4) = ...
+  err_Lambda(l, 4) = sum(w(:)~=0);
   
   % test error
-  err_Lambda(l, 5) = ...
+  err_test = test.y - test.X * w;
+  err_Lambda(l, 5) = mean(0.5 * err_test .* err_test); 
   %%% Your code here %%%
 end
 
-figure;
+subplot(2,3,1);
 plot(Lambda, err_Lambda(:, 1));
 title('training error vs lambda');
 
-figure;
+subplot(2,3,2);
 plot(Lambda, err_Lambda(:,2));
 title('L1 regularization penalty vs lambda');
 
-figure;
+subplot(2,3,3);
 plot(Lambda, err_Lambda(:,3));
 title('objective vs lambda');
 
-figure;
+subplot(2,3,4);
 plot(Lambda, err_Lambda(:, 4)');
 title('number features vs lambda');
 
-figure;
+subplot(2,3,5);
 plot(Lambda, err_Lambda(:, 5));
 title('test error vs lambda');
 

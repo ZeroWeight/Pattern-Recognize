@@ -18,20 +18,20 @@ a = sum(X .* X)' / n; % M * 1 vector
 w = w_0;
 iter = 0;
 err_tol = 1e-8;
+w_new = w;
 while (1)
   max_err = 0;
   for k = 1:M
     % evaluate c_k based on w and X 
-    %%% Your code here %%%
-    ...
-    %%% Your code here %%%
+    psi = X(:,k);
+    res = y - X * w + w(k) * psi;
+    c_k = mean(psi .* res);
     
     % update w(k)
-    %%% Your code here %%%
-    ...
-    %%% Your code here %%%
+    w_new(k) = sign(c_k) * max(abs(c_k)-lambda,0) / a(k);
+    max_err = norm(w_new - w,Inf);
+    w = w_new;
   end
-  
   iter = iter + 1;
   if (max_err < err_tol) 
       return; 
