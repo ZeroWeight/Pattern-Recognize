@@ -2,5 +2,14 @@
 #*.label
 #*.data
 *.ipynb_checkpoints
-10_Learning_Pytorch/readme.md
+11_Learning_Pytorch/readme.md
 dataset/
+*Fonts*
+*pic*
+*.ttf
+*.TTF
+*.png
+*.PNG
+*.jpg
+*.jpeg
+
