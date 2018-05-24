@@ -13,7 +13,18 @@ function e = adaboost_error(X, y, k, a, d, alpha)
 %     e     : error rate      
 
 %%% Your Code Here %%%
-
+M = length(k);
+[n,p] = size(X); 
+p = zeros(n,M);
+for i=1:M
+    if k(i) == 0
+        break;
+    end
+    p(:,i) = ((X(:, k(i)) <= a(i)) - 0.5) * 2 * d(i); % predicted label
+end
+pret = p * alpha;
+pre = ((pret > 0) - 0.5 )*2;
+e = sum((pre ~= y))/n;
 %%% Your Code Here %%%
 
 end

@@ -14,7 +14,9 @@ function w_update = update_weights(X, y, k, a, d, w, alpha)
 %     w_update : n * 1 vector, the updated weights
 
 %%% Your Code Here %%%
-
+p = ((X(:, k) <= a) - 0.5) * 2 * d; % predicted label
+w_update = w .* exp((p ~= y) .* alpha);
+w_update = w_update ./ (sum(w_update));
 %%% Your code Here %%%
 
 end
