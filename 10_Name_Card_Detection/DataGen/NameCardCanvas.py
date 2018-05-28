@@ -113,5 +113,4 @@ if __name__ == '__main__':
                     box[0], box[1], box[2], box[3], chn, eng, num
                 ))
             img_count += 1
-            if img_count == 1000:
-                break
+            print('IMG {} generated'.format(img_count))
