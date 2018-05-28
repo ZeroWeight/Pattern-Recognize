@@ -23,7 +23,7 @@ def point_in(point,box):
     return (box[0] <= point[0] <= box[2]) and (box[1] <= point[1] <= box[3])
 
 def gen_img(img):
-    pic_count = np.random.randint(15,25)
+    pic_count = np.random.randint(10,20)
     boxes = []
 
     for _ in range(pic_count):
@@ -37,8 +37,8 @@ def gen_img(img):
                 np.random.randint(margin[1], whole[1] - margin[1])
                 ]
             box = box + [
-                int(box[0] +  front_img.width * 0.8 + np.random.rand() * 0.4),
-                int(box[1] + front_img.height * 0.8 + np.random.rand() * 0.4)
+                int(box[0] +  front_img.width * 0.8 + np.random.rand() * 2.2),
+                int(box[1] + front_img.height * 0.8 + np.random.rand() * 2.2)
             ]
             if not box_in(box,boxes):
                 break

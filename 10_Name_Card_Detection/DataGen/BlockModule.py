@@ -42,7 +42,7 @@ def BlockModule(mode,revert=0):
         string_len = np.random.randint(3,7)
     else:
         string_len = np.random.randint(5,10)
-    height = 32
+    height = 48
     weight = 0
     string = ''
     for _ in range(string_len):
