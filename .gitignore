@@ -5,10 +5,12 @@
 dataset/
 *Fonts*
 *pic*
+*video*
 *.ttf
 *.TTF
 *.png
 *.PNG
 *.jpg
 *.jpeg
-
+*.pyc
+*.txt
