@@ -14,3 +14,7 @@ dataset/
 *.jpeg
 *.pyc
 *.txt
+*.rar
+*.o
+*.xml
+*.yml
