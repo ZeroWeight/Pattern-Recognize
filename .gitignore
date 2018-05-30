@@ -18,3 +18,5 @@ dataset/
 *.o
 *.xml
 *.yml
+*.tar
+*dummy*
