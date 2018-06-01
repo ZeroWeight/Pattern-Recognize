@@ -19,7 +19,7 @@ import _init_paths
 from model.config import cfg
 from model.test import im_detect
 from model.nms_wrapper import nms
-
+import sys
 from utils.timer import Timer
 import matplotlib.pyplot as plt
 import numpy as np
@@ -100,24 +100,12 @@ def demo(net, image_name):
         dets = dets[keep.numpy(), :]
         vis_detections(im, cls, dets, thresh=CONF_THRESH)
 
-def parse_args():
-    """Parse input arguments."""
-    parser = argparse.ArgumentParser(description='Tensorflow Faster R-CNN demo')
-    parser.add_argument('--net', dest='demo_net', help='Network to use [vgg16 res101]',
-                        choices=NETS.keys(), default='res101')
-    parser.add_argument('--dataset', dest='dataset', help='Trained dataset [pascal_voc pascal_voc_0712]',
-                        choices=DATASETS.keys(), default='pascal_voc_0712')
-    args = parser.parse_args()
-
-    return args
-
 if __name__ == '__main__':
     cfg.TEST.HAS_RPN = True  # Use RPN for proposals
-    args = parse_args()
 
     # model path
-    demonet = args.demo_net
-    dataset = args.dataset
+    demonet = 'res101'
+    dataset = 'pascal_voc'
     saved_model = os.path.join('output', demonet, DATASETS[dataset][0], 'default',
                               NETS[demonet][0] %(70000 if dataset == 'pascal_voc' else 110000))
 
@@ -127,12 +115,7 @@ if __name__ == '__main__':
                        'our server and place them properly?').format(saved_model))
 
     # load network
-    if demonet == 'vgg16':
-        net = vgg16()
-    elif demonet == 'res101':
-        net = resnetv1(num_layers=101)
-    else:
-        raise NotImplementedError
+    net = resnetv1(num_layers=101)
     net.create_architecture(21,
                           tag='default', anchor_scales=[8, 16, 32])
 
@@ -145,11 +128,7 @@ if __name__ == '__main__':
 
     print('Loaded network {:s}'.format(saved_model))
 
-    im_names = ['000456.jpg', '000542.jpg', '001150.jpg',
-                '001763.jpg', '004545.jpg']
-    for im_name in im_names:
-        print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        print('Demo for data/demo/{}'.format(im_name))
-        demo(net, im_name)
+    im_name = sys.argv[1]
+    demo(net, im_name)
 
     plt.show()

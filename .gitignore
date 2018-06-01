@@ -17,6 +17,6 @@ dataset/
 *.rar
 *.o
 *.xml
-*.yml
 *.tar
 *dummy*
+10_Name_Card_Detection/Data/VOCdevkit/VOCdevkit/VOC2007/

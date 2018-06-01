@@ -4,10 +4,6 @@
 # Licensed under The MIT License [see LICENSE for details]
 # Written by Ross Girshick and Xinlei Chen
 # --------------------------------------------------------
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import os
 from datasets.imdb import imdb
 import datasets.ds_utils as ds_utils
@@ -21,17 +17,13 @@ import uuid
 from .voc_eval import voc_eval
 from model.config import cfg
 
-
 class pascal_voc(imdb):
-  def __init__(self, image_set, year, use_diff=False):
+  def __init__(self, image_set, year='2007'):
     name = 'voc_' + year + '_' + image_set
-    if use_diff:
-      name += '_diff'
     imdb.__init__(self, name)
-    self._year = year
     self._image_set = image_set
     self._devkit_path = self._get_default_path()
-    self._data_path = os.path.join(self._devkit_path, 'VOC' + self._year)
+    self._data_path = os.path.join(self._devkit_path, 'VOC2007')
     self._classes = ('__background__',  # always index 0
                      'aeroplane', 'bicycle', 'bird', 'boat',
                      'bottle', 'bus', 'car', 'cat', 'chair',
@@ -49,7 +41,7 @@ class pascal_voc(imdb):
     # PASCAL specific config options
     self.config = {'cleanup': True,
                    'use_salt': True,
-                   'use_diff': use_diff,
+                   'use_diff': False,
                    'matlab_eval': False,
                    'rpn_file': None}
 
@@ -62,17 +54,15 @@ class pascal_voc(imdb):
     """
     Return the absolute path to image i in the image sequence.
     """
-    return self.image_path_from_index(self._image_index[i])
+    index = self._image_index[i]
 
-  def image_path_from_index(self, index):
-    """
-    Construct an image path from the image's "index" identifier.
-    """
     image_path = os.path.join(self._data_path, 'JPEGImages',
                               index + self._image_ext)
     assert os.path.exists(image_path), \
       'Path does not exist: {}'.format(image_path)
+
     return image_path
+
 
   def _load_image_set_index(self):
     """
@@ -92,7 +82,7 @@ class pascal_voc(imdb):
     """
     Return the default path where PASCAL VOC is expected to be installed.
     """
-    return os.path.join(cfg.DATA_DIR, 'VOCdevkit' + self._year)
+    return os.path.join(cfg.DATA_DIR, 'VOCdevkit')
 
   def gt_roidb(self):
     """
@@ -119,13 +109,9 @@ class pascal_voc(imdb):
     return gt_roidb
 
   def rpn_roidb(self):
-    if int(self._year) == 2007 or self._image_set != 'test':
-      gt_roidb = self.gt_roidb()
-      rpn_roidb = self._load_rpn_roidb(gt_roidb)
-      roidb = imdb.merge_roidbs(gt_roidb, rpn_roidb)
-    else:
-      roidb = self._load_rpn_roidb(None)
-
+    gt_roidb = self.gt_roidb()
+    rpn_roidb = self._load_rpn_roidb(gt_roidb)
+    roidb = imdb.merge_roidbs(gt_roidb, rpn_roidb)
     return roidb
 
   def _load_rpn_roidb(self, gt_roidb):
@@ -194,7 +180,7 @@ class pascal_voc(imdb):
     path = os.path.join(
       self._devkit_path,
       'results',
-      'VOC' + self._year,
+      'VOC2007',
       'Main',
       filename)
     return path
@@ -220,19 +206,19 @@ class pascal_voc(imdb):
   def _do_python_eval(self, output_dir='output'):
     annopath = os.path.join(
       self._devkit_path,
-      'VOC' + self._year,
+      'VOC2007',
       'Annotations',
       '{:s}.xml')
     imagesetfile = os.path.join(
       self._devkit_path,
-      'VOC' + self._year,
+      'VOC2007',
       'ImageSets',
       'Main',
       self._image_set + '.txt')
     cachedir = os.path.join(self._devkit_path, 'annotations_cache')
     aps = []
     # The PASCAL VOC metric changed in 2010
-    use_07_metric = True if int(self._year) < 2010 else False
+    use_07_metric = True
     print('VOC07 metric? ' + ('Yes' if use_07_metric else 'No'))
     if not os.path.isdir(output_dir):
       os.mkdir(output_dir)
