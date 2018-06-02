@@ -8,12 +8,14 @@
 """Factory method for easily getting imdbs by name."""
 __sets = {}
 
-from datasets.pascal_voc import pascal_voc
+from datasets.name_card import name_card
 import numpy as np
 
-for split in ['train', 'val', 'trainval', 'test']:
-  name = 'voc_2007_{}'.format(split)
-  __sets[name] = (lambda split=split: pascal_voc(split))
+for split in ['trainval', 'test']:
+  name = 'name_card_real_{}'.format(split)
+  __sets[name] = (lambda split=split: name_card(split,'NameCardReal'))
+
+__sets['name_card_fake_train'] = (lambda: name_card('trainval','NameCardFake'))
 
 def get_imdb(name):
   """Get an imdb (image database) by name."""

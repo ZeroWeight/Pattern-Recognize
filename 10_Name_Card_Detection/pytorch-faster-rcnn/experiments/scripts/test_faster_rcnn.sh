@@ -49,7 +49,7 @@ else
   NET_FINAL=output/${NET}/${TRAIN_IMDB}/default/${NET}_faster_rcnn_iter_${ITERS}.pth
 fi
 set -x
-CUDA_VISIBLE_DEVICES=${GPU_ID} time python3 ./tools/test_net.py \
+CUDA_VISIBLE_DEVICES=${GPU_ID} time python3.5 ./tools/test_net.py \
   --imdb ${TEST_IMDB} \
   --model ${NET_FINAL} \
   --cfg experiments/cfgs/${NET}.yml \
