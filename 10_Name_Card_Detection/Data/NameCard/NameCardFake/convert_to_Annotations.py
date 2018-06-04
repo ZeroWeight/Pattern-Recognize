@@ -7,9 +7,9 @@ for filename in ['train.txt']:
       index = words[1].split('.')[0].split('/')[1]
       with Image.open(os.path.join('JPEGImages',(line.split(' ')[1].split('/')[1].split('.')[0] + '.jpg'))) as im:
         with open(os.path.join('Annotations',(str(index) + '.xml.bak')),'a') as g:
-          if words[6] == 1:
+          if float(words[6]) == 1:
             cls = 'Chinese'
-          elif words[7] == 1:
+          elif float(words[7]) == 1:
             cls = 'English'
           else:
             cls = 'Number'

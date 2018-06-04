@@ -6,12 +6,12 @@ for filename in ['train.txt', 'valid.txt']:
       words = line.split(' ')
       index = words[1].split('.')[0]
       with open(os.path.join('Annotations',(str(index) + '.xml.bak')),'a') as g:
-        if words[6] == 1:
-          cls = 'Chinese'
-        elif words[7] == 1:
+        if float(words[6]) == 1:
+          cls = 'Number'
+        elif float(words[7]) == 1:
           cls = 'English'
         else:
-          cls = 'Number'
+          cls = 'Chinese'
         g.write('\t<object>\n\t\t<name>{}</name>\n'.format(cls))
         g.write('\t\t<pose>Unspecified</pose>\n\t\t<truncated>1</truncated>\n\t\t<difficult>0</difficult>\n')
         g.write('\t\t<bndbox>\n\t\t\t<xmin>{}</xmin>\n\t\t\t<ymin>{}</ymin>\n\t\t\t<xmax>{}</xmax>\n\t\t\t<ymax>{}</ymax>\n'.format(
