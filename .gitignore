@@ -21,3 +21,5 @@ dataset/
 *dummy*
 10_Name_Card_Detection/Data/VOCdevkit/VOCdevkit/VOC2007/
 *.bak
+*.pkl
+*.pth
