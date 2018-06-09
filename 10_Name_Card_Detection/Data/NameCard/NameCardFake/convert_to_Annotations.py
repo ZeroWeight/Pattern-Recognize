@@ -1,6 +1,6 @@
 import os
 
-for filename in ['train.txt', 'valid.txt']:
+for filename in ['train.txt']:
   with open(filename,'r') as f:
     for line in f:
       words = line.split(' ')

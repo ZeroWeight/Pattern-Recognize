@@ -19,18 +19,9 @@ import torch
 CLASSES = ('__background__',
            'chinese', 'english', 'number')
 
-def test(image_name):
+def img_test(net,image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
-    net = resnetv1(num_layers=101)
-    net.create_architecture(4, tag='default', anchor_scales=[8, 16, 32])
-
-    net.load_state_dict(torch.load(os.path.join('../output', 'res101', 'NameCardtrainvalNameCardReal', 'default',
-                              'res101_faster_rcnn_iter_200000.pth'), map_location=lambda storage, loc: storage))
-    net.eval()
-    if not torch.cuda.is_available():
-        net._device = 'cpu'
-    net.to(net._device)
     # Load the demo image
     im_file = os.path.join(image_name)
     im = cv2.imread(im_file)
@@ -58,30 +49,75 @@ def test(image_name):
 
 
 if __name__ == '__main__':
+  net = resnetv1(num_layers=101)
+  net.create_architecture(4, tag='default', anchor_scales=[8, 16, 32])
+
+  net.load_state_dict(torch.load(os.path.join('../output', 'res101', 'NameCardtrainvalNameCardReal', 'default',
+                              'res101_faster_rcnn_iter_200000.pth'), map_location=lambda storage, loc: storage))
+  net.eval()
+  if not torch.cuda.is_available():
+      net._device = 'cpu'
+  net.to(net._device)
+
   name = sys.argv[1]
-  boxes = test(name)
-  im = Image.open(name)
-  draw = ImageDraw.Draw(im)
-  # number output
-  for box in boxes[2]:
-    print('{} {} {} {} {} 1 0 0'.format(name,box[0],box[1],box[2],box[3]))
-    draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,0))
-    draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,0))
-    draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,0))
-    draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,0))
-  # english output
-  for box in boxes[1]:
-    print('{} {} {} {} {} 0 1 0'.format(name,box[0],box[1],box[2],box[3]))
-    draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(255,0,0))
-    draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(255,0,0))
-    draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(255,0,0))
-    draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(255,0,0))
-  # chinese output
-  for box in boxes[0]:
-    print('{} {} {} {} {} 0 0 1'.format(name,box[0],box[1],box[2],box[3]))
-    draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,255))
-    draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,255))
-    draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,255))
-    draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,255))
-  new_name = name.split('.')[0] + '_out.jpg'
-  im.save(new_name)
+  if name.split('/')[-1].split('.')[1] == 'txt':
+    with open(name,'r') as f:
+      for line in f:
+        filename = line[:-1]
+        boxes = img_test(net,filename)
+        im = Image.open(filename)
+        draw = ImageDraw.Draw(im)
+        # number output
+        for box in boxes[2]:
+          print('{} {} {} {} {} 1 0 0'.format(filename,box[0],box[1],box[2],box[3]))
+          draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,0))
+          draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,0))
+          draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,0))
+          draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,0))
+        # english output
+        for box in boxes[1]:
+          print('{} {} {} {} {} 0 1 0'.format(filename,box[0],box[1],box[2],box[3]))
+          draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(255,0,0))
+          draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(255,0,0))
+          draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(255,0,0))
+          draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(255,0,0))
+        # chinese output
+        for box in boxes[0]:
+          print('{} {} {} {} {} 0 0 1'.format(filename,box[0],box[1],box[2],box[3]))
+          draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,255))
+          draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,255))
+          draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,255))
+          draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,255))
+        new_name = filename.split('/')[-1].split('.')[0] + '_out.jpg'
+        im.save(new_name)
+  elif name.split('/')[-1].split('.')[1] == 'jpg':
+    filename = name
+    boxes = img_test(net,filename)
+    im = Image.open(filename)
+    draw = ImageDraw.Draw(im)
+    # number output
+    for box in boxes[2]:
+      print('{} {} {} {} {} 1 0 0'.format(name,box[0],box[1],box[2],box[3]))
+      draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,0))
+      draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,0))
+      draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,0))
+      draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,0))
+    # english output
+    for box in boxes[1]:
+      print('{} {} {} {} {} 0 1 0'.format(name,box[0],box[1],box[2],box[3]))
+      draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(255,0,0))
+      draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(255,0,0))
+      draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(255,0,0))
+      draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(255,0,0))
+    # chinese output
+    for box in boxes[0]:
+      print('{} {} {} {} {} 0 0 1'.format(name,box[0],box[1],box[2],box[3]))
+      draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,255))
+      draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,255))
+      draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,255))
+      draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,255))
+    new_name = filename.split('/')[-1].split('.')[0] + '_out.jpg'
+    im.save(new_name)
+  else:
+    print('Error file format, use txt or jpg file input')
+
