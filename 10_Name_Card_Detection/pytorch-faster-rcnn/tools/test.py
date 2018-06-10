@@ -52,8 +52,7 @@ if __name__ == '__main__':
   half_net = resnetv1(num_layers=101)
   half_net.create_architecture(4, tag='default', anchor_scales=[8, 16, 32])
 
-  half_net.load_state_dict(torch.load(os.path.join('../output', 'res101', 'NameCardtrainvalNameCardReal', 'default',
-                              'res101_faster_rcnn_iter_200000.pth'), map_location=lambda storage, loc: storage))
+  half_net.load_state_dict(torch.load('params.pth', map_location=lambda storage, loc: storage))
   net = half_net.to(torch.float32)
   net.eval()
   if not torch.cuda.is_available():
@@ -63,6 +62,7 @@ if __name__ == '__main__':
   name = sys.argv[1]
   if name.split('/')[-1].split('.')[1] == 'txt':
     with open(name,'r') as f:
+      count = 0
       for line in f:
         filename = line[:-1]
         boxes = img_test(net,filename)
@@ -70,27 +70,28 @@ if __name__ == '__main__':
         draw = ImageDraw.Draw(im)
         # number output
         for box in boxes[2]:
-          print('{} {} {} {} {} 1 0 0'.format(filename,box[0],box[1],box[2],box[3]))
+          print('{} {} {} {} {} {} 1 0 0'.format(count,filename,box[0],box[1],box[2],box[3]))
           draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,0))
           draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,0))
           draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,0))
           draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,0))
         # english output
         for box in boxes[1]:
-          print('{} {} {} {} {} 0 1 0'.format(filename,box[0],box[1],box[2],box[3]))
+          print('{} {} {} {} {} {} 0 1 0'.format(count,filename,box[0],box[1],box[2],box[3]))
           draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(255,0,0))
           draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(255,0,0))
           draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(255,0,0))
           draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(255,0,0))
         # chinese output
         for box in boxes[0]:
-          print('{} {} {} {} {} 0 0 1'.format(filename,box[0],box[1],box[2],box[3]))
+          print('{} {} {} {} {} {} 0 0 1'.format(count,filename,box[0],box[1],box[2],box[3]))
           draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,255))
           draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,255))
           draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,255))
           draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,255))
         new_name = filename.split('/')[-1].split('.')[0] + '_out.jpg'
         im.save(new_name)
+        count += 1
   elif name.split('/')[-1].split('.')[1] == 'jpg':
     filename = name
     boxes = img_test(net,filename)
@@ -98,21 +99,21 @@ if __name__ == '__main__':
     draw = ImageDraw.Draw(im)
     # number output
     for box in boxes[2]:
-      print('{} {} {} {} {} 1 0 0'.format(name,box[0],box[1],box[2],box[3]))
+      print('0 {} {} {} {} {} 1 0 0'.format(name,box[0],box[1],box[2],box[3]))
       draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,0))
       draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,0))
       draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,0))
       draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(0,0,0))
     # english output
     for box in boxes[1]:
-      print('{} {} {} {} {} 0 1 0'.format(name,box[0],box[1],box[2],box[3]))
+      print('0 {} {} {} {} {} 0 1 0'.format(name,box[0],box[1],box[2],box[3]))
       draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(255,0,0))
       draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(255,0,0))
       draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(255,0,0))
       draw.line((box[0],box[3],box[2],box[3]),width=3,fill=(255,0,0))
     # chinese output
     for box in boxes[0]:
-      print('{} {} {} {} {} 0 0 1'.format(name,box[0],box[1],box[2],box[3]))
+      print('0 {} {} {} {} {} 0 0 1'.format(name,box[0],box[1],box[2],box[3]))
       draw.line((box[0],box[1],box[0],box[3]),width=3,fill=(0,0,255))
       draw.line((box[2],box[1],box[2],box[3]),width=3,fill=(0,0,255))
       draw.line((box[0],box[1],box[2],box[1]),width=3,fill=(0,0,255))
