@@ -49,11 +49,12 @@ def img_test(net,image_name):
 
 
 if __name__ == '__main__':
-  net = resnetv1(num_layers=101)
-  net.create_architecture(4, tag='default', anchor_scales=[8, 16, 32])
+  half_net = resnetv1(num_layers=101)
+  half_net.create_architecture(4, tag='default', anchor_scales=[8, 16, 32])
 
-  net.load_state_dict(torch.load(os.path.join('../output', 'res101', 'NameCardtrainvalNameCardReal', 'default',
+  half_net.load_state_dict(torch.load(os.path.join('../output', 'res101', 'NameCardtrainvalNameCardReal', 'default',
                               'res101_faster_rcnn_iter_200000.pth'), map_location=lambda storage, loc: storage))
+  net = half_net.to(torch.float32)
   net.eval()
   if not torch.cuda.is_available():
       net._device = 'cpu'
