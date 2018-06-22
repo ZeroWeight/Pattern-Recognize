@@ -341,6 +341,21 @@ We also find out that no matter what method is applied, there are still some pro
 
 Another possible reason is that the English charaters and the numbers are inserted easily to the Chinese samples and other samples, which makes it different to label.
 
+Here are some output of the bounding box of name card, the Chinese characters are shown in red bounding box, 
+the English one are showned in blue one, while the number is shown in black one
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\columnwidth]{0000_out.jpg}
+    \caption{Image 0000}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\columnwidth]{0011_out.jpg}
+    \caption{Image 0011}
+\end{figure}
+
 \section{Conclusion}
 
 In conclusion, we found out that the faster RCNN model (with ResNet101 ImageNet pre-trained) can successfully detect the characters on namecard. And combined with other network structure, we can solve the detection and moreover, machine translation problems more easily.
